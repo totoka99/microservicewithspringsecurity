@@ -36,7 +36,7 @@ class UserControllerMockMvcIT {
     @WithMockUser(roles = "ADMIN")
     void init() throws Exception {
         createUserDto = new CreateUserDto();
-        createUserDto.setName("testuser");
+        createUserDto.setUsername("testuser");
         createUserDto.setPassword("testpassword");
         createUserDto.setRoles("ROLE_ADMIN");
 
@@ -89,7 +89,7 @@ class UserControllerMockMvcIT {
     @Test
     @WithMockUser(roles = "ADMIN")
     void createNewUserAuthorizedTest() throws Exception {
-        createUserDto.setName("jackson");
+        createUserDto.setUsername("jackson");
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/user")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -100,7 +100,7 @@ class UserControllerMockMvcIT {
     @Test
     @WithMockUser(roles = "ADMIN")
     void createNewUserAuthorizedBadRequestParamValidationFailTest() throws Exception {
-        createUserDto.setName("");
+        createUserDto.setUsername("");
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/user")
                         .contentType(MediaType.APPLICATION_JSON)

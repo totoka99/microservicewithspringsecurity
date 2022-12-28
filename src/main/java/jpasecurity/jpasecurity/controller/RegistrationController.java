@@ -1,6 +1,7 @@
 package jpasecurity.jpasecurity.controller;
 
 import jpasecurity.jpasecurity.model.dto.CreateUserDto;
+import jpasecurity.jpasecurity.model.dto.UserRegistrationDto;
 import jpasecurity.jpasecurity.model.entity.User;
 import jpasecurity.jpasecurity.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public User registeringNewUser(@RequestBody CreateUserDto createUserDto) {
-        return this.userService.registering(createUserDto);
+    public User registeringNewUser(@RequestBody UserRegistrationDto userRegistrationDto) {
+        return this.userService.registering(userRegistrationDto);
     }
 }

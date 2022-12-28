@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateUserDto {
     @NotBlank(message = "username cant be empty")
-    private String name;
+    private String username;
     @NotBlank(message = "password cant be empty")
     private String password;
     @NotBlank(message = "roles must be given options: ROLE_USER,ROLE_ADMIN")

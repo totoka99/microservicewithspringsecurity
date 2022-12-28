@@ -34,7 +34,7 @@ class UserControllerWtcIT {
 
 
         createUserDto = new CreateUserDto();
-        createUserDto.setName("testuser");
+        createUserDto.setUsername("testuser");
         createUserDto.setPassword("testpassword");
         createUserDto.setRoles("ROLE_ADMIN");
 
@@ -99,7 +99,7 @@ class UserControllerWtcIT {
     @Test
     @WithMockUser(roles = "ADMIN")
     void createNewUserAuthorizedTest() throws Exception {
-        createUserDto.setName("jackson");
+        createUserDto.setUsername("jackson");
         webTestClient
                 .post()
                 .uri("/api/user", user.getId())
@@ -111,7 +111,7 @@ class UserControllerWtcIT {
     @Test
     @WithMockUser(roles = "ADMIN")
     void createNewUserAuthorizedBadRequestParamValidationFailTest() throws Exception {
-        createUserDto.setName("");
+        createUserDto.setUsername("");
         webTestClient
                 .post()
                 .uri("/api/user", user.getId())

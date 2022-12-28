@@ -5,6 +5,7 @@ import jpasecurity.jpasecurity.expcetion.UsernameIsTakenException;
 import jpasecurity.jpasecurity.model.dto.CreateUserDto;
 import jpasecurity.jpasecurity.model.dto.UpdateUserPasswordDto;
 import jpasecurity.jpasecurity.model.dto.UpdateUsernameDto;
+import jpasecurity.jpasecurity.model.dto.UserRegistrationDto;
 import jpasecurity.jpasecurity.model.entity.User;
 import jpasecurity.jpasecurity.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,9 +27,9 @@ public class UserService {
 
 
     public User saveNewUser(CreateUserDto createUserDto) throws UsernameIsTakenException {
-        isUsernameAvailable(createUserDto.getName());
+        isUsernameAvailable(createUserDto.getUsername());
         User user = new User();
-        user.setUsername(createUserDto.getName());
+        user.setUsername(createUserDto.getUsername());
         user.setRoles(createUserDto.getRoles());
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
         userRepository.save(user);
@@ -67,11 +68,11 @@ public class UserService {
         userRepository.delete(findUserIfPresent(id));
     }
 
-    public User registering(CreateUserDto createUserDto) {
-        isUsernameAvailable(createUserDto.getName());
+    public User registering(UserRegistrationDto userRegistrationDto) {
+        isUsernameAvailable(userRegistrationDto.getUsername());
         User userToRegistering = new User();
-        userToRegistering.setUsername(createUserDto.getName());
-        userToRegistering.setPassword(createUserDto.getPassword());
+        userToRegistering.setUsername(userRegistrationDto.getUsername());
+        userToRegistering.setPassword(userRegistrationDto.getPassword());
         userToRegistering.setRoles("ROLE_USER");
         return userRepository.save(userToRegistering);
     }
