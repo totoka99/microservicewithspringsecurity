@@ -82,6 +82,5 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-        <finalName>microservice</finalName>
     </build>
 </project>
