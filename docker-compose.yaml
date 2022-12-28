@@ -1,0 +1,29 @@
+services:
+  database:
+    image: mariadb
+    restart: always
+    container_name: usersanddata
+    ports:
+      - 3300:3306
+    environment:
+      - MARIADB_ROOT_PASSWORD=c0c4c0l4
+      - MARIADB_DATABASE=authdtb
+    volumes:
+      - mariadb-data:/mariadb:/var/lib/mysql
+  backend:
+    depends_on:
+      - database
+    links:
+      - database:mariadb_db
+    restart: always
+    image: javabackend
+    container_name: microservice
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=c0c4c0l4
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb_db:3306/authdtb
+volumes:
+  mariadb-data:
+    driver: local
