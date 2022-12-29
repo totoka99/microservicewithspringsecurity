@@ -1,4 +1,4 @@
-CREATE TABLE `example` (
+CREATE TABLE `examples` (
   id BIGINT AUTO_INCREMENT NOT NULL,
    name VARCHAR(255) NULL,
    `description` VARCHAR(255) NULL,
