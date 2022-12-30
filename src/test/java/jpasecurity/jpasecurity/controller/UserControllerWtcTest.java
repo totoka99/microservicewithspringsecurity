@@ -53,11 +53,6 @@ class UserControllerWtcTest {
     }
 
     @Test
-    void modelMapper() {
-
-    }
-
-    @Test
     void createNewUserTest() {
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
         when(userRepository.findByUsernameIgnoreCase(any())).thenReturn(Optional.empty());
