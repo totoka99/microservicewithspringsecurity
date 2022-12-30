@@ -1,6 +1,8 @@
 package jpasecurity.jpasecurity.service;
 
 import jpasecurity.jpasecurity.expcetion.ExampleNotFoundException;
+import jpasecurity.jpasecurity.model.ModelMapper;
+import jpasecurity.jpasecurity.model.dto.ExampleDto;
 import jpasecurity.jpasecurity.model.entity.Example;
 import jpasecurity.jpasecurity.model.dto.CreateExampleDto;
 import jpasecurity.jpasecurity.model.dto.UpdateExampleDto;
@@ -13,16 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ExampleService {
     private final ExampleRepository exampleRepository;
+    private final ModelMapper mapper;
 
-    public Example findById(Long id) {
-        return exampleRepository.findById(id).orElseThrow(() -> new ExampleNotFoundException(id));
+    public ExampleDto findById(Long id) {
+        return mapper.toExampleDto(exampleRepository.findById(id).orElseThrow(() -> new ExampleNotFoundException(id)));
     }
 
-    public Example saveNewExample(CreateExampleDto createExampleDto) {
+    public ExampleDto saveNewExample(CreateExampleDto createExampleDto) {
         Example example = new Example();
         example.setDescription(createExampleDto.getDescription());
         example.setName(createExampleDto.getName());
-        return exampleRepository.save(example);
+        return mapper.toExampleDto(exampleRepository.save(example));
     }
 
     @Transactional

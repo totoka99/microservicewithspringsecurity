@@ -3,6 +3,7 @@ package jpasecurity.jpasecurity.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jpasecurity.jpasecurity.model.dto.CreateExampleDto;
+import jpasecurity.jpasecurity.model.dto.ExampleDto;
 import jpasecurity.jpasecurity.model.dto.UpdateExampleDto;
 import jpasecurity.jpasecurity.model.entity.Example;
 import jpasecurity.jpasecurity.service.ExampleService;
@@ -21,7 +22,7 @@ public class ExampleController {
     @Operation(summary = "Return example's data")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponse(responseCode = "200")
-    public Example getExampleById(@PathVariable Long exampleId) {
+    public ExampleDto getExampleById(@PathVariable Long exampleId) {
         return exampleService.findById(exampleId);
     }
 
@@ -29,7 +30,7 @@ public class ExampleController {
     @Operation(summary = "Create new example")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponse(responseCode = "201")
-    public Example createExample(@RequestBody CreateExampleDto createExampleDto) {
+    public ExampleDto createExample(@RequestBody CreateExampleDto createExampleDto) {
         return exampleService.saveNewExample(createExampleDto);
     }
 

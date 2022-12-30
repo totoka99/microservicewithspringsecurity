@@ -1,11 +1,10 @@
 package jpasecurity.jpasecurity.service;
 
+import jakarta.annotation.PostConstruct;
 import jpasecurity.jpasecurity.expcetion.UserNotFoundException;
 import jpasecurity.jpasecurity.expcetion.UsernameIsTakenException;
-import jpasecurity.jpasecurity.model.dto.CreateUserDto;
-import jpasecurity.jpasecurity.model.dto.UpdateUserPasswordDto;
-import jpasecurity.jpasecurity.model.dto.UpdateUsernameDto;
-import jpasecurity.jpasecurity.model.dto.UserRegistrationDto;
+import jpasecurity.jpasecurity.model.ModelMapper;
+import jpasecurity.jpasecurity.model.dto.*;
 import jpasecurity.jpasecurity.model.entity.User;
 import jpasecurity.jpasecurity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,28 +19,33 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper mapper;
 
-    public User findUserById(Long id) {
-        return findUserIfPresent(id);
+    public UserDto findUserById(Long id) {
+        return mapper.toUserDto(findUserIfPresent(id));
+    }
+    @PostConstruct
+    void init(){
+        saveNewUser(new CreateUserDto("admin","admin","ROLE_ADMIN"));
     }
 
-    public User saveNewUser(CreateUserDto createUserDto) throws UsernameIsTakenException {
+    public UserDto saveNewUser(CreateUserDto createUserDto) throws UsernameIsTakenException {
         isUsernameAvailable(createUserDto.getUsername());
         User user = new User();
         user.setUsername(createUserDto.getUsername());
         user.setRoles(createUserDto.getRoles());
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
         userRepository.save(user);
-        return user;
+        return mapper.toUserDto(user);
     }
 
-    public User registering(UserRegistrationDto userRegistrationDto) {
+    public UserDto registering(UserRegistrationDto userRegistrationDto) {
         isUsernameAvailable(userRegistrationDto.getUsername());
         User userToRegistering = new User();
         userToRegistering.setUsername(userRegistrationDto.getUsername());
         userToRegistering.setPassword(userRegistrationDto.getPassword());
         userToRegistering.setRoles("ROLE_USER");
-        return userRepository.save(userToRegistering);
+        return mapper.toUserDto(userRepository.save(userToRegistering));
     }
 
     @Transactional

@@ -49,7 +49,6 @@ class UserControllerMockMvcIT {
 
         String content = mockResult.getResponse().getContentAsString();
         user = objectMapper.readValue(content, User.class);
-        System.out.println(user);
     }
 
     @Test

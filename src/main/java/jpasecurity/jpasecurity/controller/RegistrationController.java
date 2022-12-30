@@ -3,6 +3,7 @@ package jpasecurity.jpasecurity.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jpasecurity.jpasecurity.model.dto.CreateUserDto;
+import jpasecurity.jpasecurity.model.dto.UserDto;
 import jpasecurity.jpasecurity.model.dto.UserRegistrationDto;
 import jpasecurity.jpasecurity.model.entity.User;
 import jpasecurity.jpasecurity.service.UserService;
@@ -21,7 +22,7 @@ public class RegistrationController {
     @Operation(summary = "Create a user with USER authority")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponse(responseCode = "201")
-    public User registeringNewUser(@RequestBody UserRegistrationDto userRegistrationDto) {
+    public UserDto registeringNewUser(@RequestBody UserRegistrationDto userRegistrationDto) {
         return this.userService.registering(userRegistrationDto);
     }
 }
