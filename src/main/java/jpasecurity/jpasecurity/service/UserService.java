@@ -8,6 +8,7 @@ import jpasecurity.jpasecurity.model.dto.UpdateUsernameDto;
 import jpasecurity.jpasecurity.model.dto.UserRegistrationDto;
 import jpasecurity.jpasecurity.model.entity.User;
 import jpasecurity.jpasecurity.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    public User findUserById(Long id) {
+        return findUserIfPresent(id);
     }
-
 
     public User saveNewUser(CreateUserDto createUserDto) throws UsernameIsTakenException {
         isUsernameAvailable(createUserDto.getUsername());
@@ -36,10 +35,13 @@ public class UserService {
         return user;
     }
 
-    private void isUsernameAvailable(String username) throws UsernameIsTakenException {
-        Optional<User> user = userRepository.findByUsernameIgnoreCase(username);
-        if (user.isPresent())
-            throw new UsernameIsTakenException(username);
+    public User registering(UserRegistrationDto userRegistrationDto) {
+        isUsernameAvailable(userRegistrationDto.getUsername());
+        User userToRegistering = new User();
+        userToRegistering.setUsername(userRegistrationDto.getUsername());
+        userToRegistering.setPassword(userRegistrationDto.getPassword());
+        userToRegistering.setRoles("ROLE_USER");
+        return userRepository.save(userToRegistering);
     }
 
     @Transactional
@@ -49,31 +51,25 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUsername(UpdateUsernameDto updateUsernameDto, Long id) {
+    public void updateUsername(Long id, UpdateUsernameDto updateUsernameDto) {
         User user = findUserIfPresent(id);
         isUsernameAvailable(updateUsernameDto.getUsername());
         user.setUsername(updateUsernameDto.getUsername());
-    }
-
-    private User findUserIfPresent(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-    }
-
-    public User findUserById(Long id) {
-        return findUserIfPresent(id);
     }
 
     public void deleteUserById(Long id) {
         userRepository.delete(findUserIfPresent(id));
     }
 
-    public User registering(UserRegistrationDto userRegistrationDto) {
-        isUsernameAvailable(userRegistrationDto.getUsername());
-        User userToRegistering = new User();
-        userToRegistering.setUsername(userRegistrationDto.getUsername());
-        userToRegistering.setPassword(userRegistrationDto.getPassword());
-        userToRegistering.setRoles("ROLE_USER");
-        return userRepository.save(userToRegistering);
+    private void isUsernameAvailable(String username) throws UsernameIsTakenException {
+        Optional<User> user = userRepository.findByUsernameIgnoreCase(username);
+        if (user.isPresent()) {
+            throw new UsernameIsTakenException(username);
+        }
+    }
+
+    private User findUserIfPresent(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 }

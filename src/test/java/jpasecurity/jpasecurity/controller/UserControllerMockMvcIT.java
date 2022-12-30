@@ -49,6 +49,7 @@ class UserControllerMockMvcIT {
 
         String content = mockResult.getResponse().getContentAsString();
         user = objectMapper.readValue(content, User.class);
+        System.out.println(user);
     }
 
     @Test
@@ -112,7 +113,7 @@ class UserControllerMockMvcIT {
     @WithMockUser(roles = "ADMIN")
     void updateUserPasswordTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user/{id}/password", user.getId())
+                        .patch("/api/user/{id}/password", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UpdateUserPasswordDto("passwwrod"))))
                 .andExpect(status().isAccepted());
@@ -122,7 +123,7 @@ class UserControllerMockMvcIT {
     @WithMockUser(roles = "USER")
     void updateUserPasswordForbiddenTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user/{id}/password", user.getId())
+                        .patch("/api/user/{id}/password", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UpdateUserPasswordDto("something"))))
                 .andExpect(status().isForbidden());
@@ -131,7 +132,7 @@ class UserControllerMockMvcIT {
     @Test
     void updateUserPasswordIsUnauthorizedTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user/{id}/password", user.getId())
+                        .patch("/api/user/{id}/password", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UpdateUserPasswordDto("something"))))
                 .andExpect(status().isUnauthorized());
@@ -141,7 +142,7 @@ class UserControllerMockMvcIT {
     @WithMockUser(roles = "ADMIN")
     void updateUserPasswordBadRequestTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user/{id}/password", user.getId())
+                        .patch("/api/user/{id}/password", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UpdateUserPasswordDto(""))))
                 .andExpect(status().isBadRequest());
@@ -152,7 +153,7 @@ class UserControllerMockMvcIT {
     @WithMockUser(roles = "ADMIN")
     void updateUsernameTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user/{id}/username", user.getId())
+                        .patch("/api/user/{id}/username", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UpdateUsernameDto("something"))))
                 .andExpect(status().isAccepted());
@@ -162,7 +163,7 @@ class UserControllerMockMvcIT {
     @WithMockUser(roles = "ADMIN")
     void updateUsernameBadRquestTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user/{id}/username", user.getId())
+                        .patch("/api/user/{id}/username", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UpdateUsernameDto(""))))
                 .andExpect(status().isBadRequest());
@@ -172,7 +173,7 @@ class UserControllerMockMvcIT {
     @WithMockUser(roles = "USER")
     void updateUsernameForbiddenTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user/{id}/username", user.getId())
+                        .patch("/api/user/{id}/username", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UpdateUsernameDto("something"))))
                 .andExpect(status().isForbidden());
@@ -181,7 +182,7 @@ class UserControllerMockMvcIT {
     @Test
     void updateUsernameUnauthorizedTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user/{id}/username", user.getId())
+                        .patch("/api/user/{id}/username", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UpdateUsernameDto("something"))))
                 .andExpect(status().isUnauthorized());
@@ -192,14 +193,14 @@ class UserControllerMockMvcIT {
     void deleteUserByIdTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/user/{id}", user.getId()))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void deleteUserByIdNotFoundTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/user/{id}", user.getId() + 1))
+                        .delete("/api/user/{userId}", user.getId() + 1))
                 .andExpect(status().isNotFound());
     }
 

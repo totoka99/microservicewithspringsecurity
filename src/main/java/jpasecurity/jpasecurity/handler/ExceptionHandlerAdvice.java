@@ -16,7 +16,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(UsernameIsTakenException.class)
     public ProblemDetail handleUsernameIsTakenException(UsernameIsTakenException e) {
         ProblemDetail problemDetail = ProblemDetail
-                .forStatusAndDetail(HttpStatus.NOT_ACCEPTABLE,
+                .forStatusAndDetail(HttpStatus.CONFLICT,
                         String.format("This username is already in use: %s", e.getUsername()));
         problemDetail.setTitle("Username is already taken");
         problemDetail.setType(URI.create("username-is-taken"));

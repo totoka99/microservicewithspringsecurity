@@ -1,13 +1,10 @@
 package jpasecurity.jpasecurity.expcetion;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public class UsernameIsTakenException extends RuntimeException {
     private final String username;
-
-    public UsernameIsTakenException(String username) {
-        this.username = username;
-    }
-
-    public String getUsername() {
-        return username;
-    }
 }

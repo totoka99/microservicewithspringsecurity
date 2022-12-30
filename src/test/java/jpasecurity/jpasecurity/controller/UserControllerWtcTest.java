@@ -98,7 +98,7 @@ class UserControllerWtcTest {
         when(passwordEncoder.encode(anyString())).thenReturn("passwordEncoded");
 
         webTestClient
-                .put().uri("/api/user/{id}/password", user.getId())
+                .patch().uri("/api/user/{id}/password", user.getId())
                 .bodyValue(new UpdateUserPasswordDto("passwordEncoded"))
                 .exchange()
                 .expectStatus().isAccepted();
@@ -111,7 +111,7 @@ class UserControllerWtcTest {
         when(passwordEncoder.encode(anyString())).thenReturn("passwordEncoded");
 
         webTestClient
-                .put().uri("/api/user/{id}/password", user.getId())
+                .patch().uri("/api/user/{id}/password", user.getId())
                 .bodyValue(new UpdateUserPasswordDto(""))
                 .exchange()
                 .expectStatus().isBadRequest();
@@ -122,7 +122,7 @@ class UserControllerWtcTest {
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
 
         webTestClient
-                .put().uri("/api/user/{id}/username", user.getId())
+                .patch().uri("/api/user/{id}/username", user.getId())
                 .bodyValue(new UpdateUsernameDto("username"))
                 .exchange()
                 .expectStatus().isAccepted();
@@ -133,7 +133,7 @@ class UserControllerWtcTest {
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
 
         webTestClient
-                .put().uri("/api/user/{id}/username", user.getId())
+                .patch().uri("/api/user/{id}/username", user.getId())
                 .bodyValue(new UpdateUsernameDto(""))
                 .exchange()
                 .expectStatus().isBadRequest();
@@ -147,7 +147,7 @@ class UserControllerWtcTest {
         when(userRepository.findByUsernameIgnoreCase(any())).thenReturn(Optional.of(userWithSameName));
 
         webTestClient
-                .put().uri("/api/user/{id}/username", user.getId())
+                .patch().uri("/api/user/{id}/username", user.getId())
                 .bodyValue(new UpdateUsernameDto("sameName"))
                 .exchange()
                 .expectStatus().is4xxClientError()
@@ -187,7 +187,7 @@ class UserControllerWtcTest {
                 .uri("/api/user/{id}", user.getId())
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isNoContent();
     }
 
     @Test

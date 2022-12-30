@@ -5,17 +5,14 @@ import jpasecurity.jpasecurity.model.entity.Example;
 import jpasecurity.jpasecurity.model.dto.CreateExampleDto;
 import jpasecurity.jpasecurity.model.dto.UpdateExampleDto;
 import jpasecurity.jpasecurity.repository.ExampleRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class ExampleService {
-
     private final ExampleRepository exampleRepository;
-
-    public ExampleService(ExampleRepository exampleRepository) {
-        this.exampleRepository = exampleRepository;
-    }
 
     public Example findById(Long id) {
         return exampleRepository.findById(id).orElseThrow(() -> new ExampleNotFoundException(id));

@@ -8,17 +8,21 @@ import jpasecurity.jpasecurity.model.dto.UpdateUserPasswordDto;
 import jpasecurity.jpasecurity.model.dto.UpdateUsernameDto;
 import jpasecurity.jpasecurity.model.entity.User;
 import jpasecurity.jpasecurity.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("api/user")
+@RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    @GetMapping("/{userId}")
+    @Operation(summary = "Return user's data")
+    @ResponseStatus(HttpStatus.OK)
+    public User findUsersAllData(@PathVariable Long userId) {
+        return userService.findUserById(userId);
     }
 
     @PostMapping
@@ -28,31 +32,24 @@ public class UserController {
         return userService.saveNewUser(createUserDto);
     }
 
-    @PutMapping("/{id}/password")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    @Operation(summary = "Update user's password")
-    public void updateUserPassword(@RequestBody @Valid UpdateUserPasswordDto updateUserPasswordDto, @PathVariable("id") Long id) {
-        userService.updateUserPassword(id, updateUserPasswordDto);
-    }
-
-    @PutMapping("/{id}/username")
+    @PatchMapping("/{userId}/username")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Update user's username")
-    public void updateUsername(@RequestBody @Valid UpdateUsernameDto updateUsernameDto, @PathVariable("id") Long id) {
-        userService.updateUsername(updateUsernameDto, id);
+    public void updateUsername(@RequestBody @Valid UpdateUsernameDto updateUsernameDto, @PathVariable Long userId) {
+        userService.updateUsername(userId, updateUsernameDto);
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Return user's data")
-    @ResponseStatus(HttpStatus.OK)
-    public User findUsersAllData(@PathVariable Long id) {
-        return userService.findUserById(id);
+    @PatchMapping("/{userId}/password")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @Operation(summary = "Update user's password")
+    public void updateUserPassword(@RequestBody @Valid UpdateUserPasswordDto updateUserPasswordDto, @PathVariable Long userId) {
+        userService.updateUserPassword(userId, updateUserPasswordDto);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{userId}")
     @Operation(summary = "Delete user by id")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteUserById(@PathVariable("id") Long id) {
-        userService.deleteUserById(id);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUserById(@PathVariable Long userId) {
+        userService.deleteUserById(userId);
     }
 }

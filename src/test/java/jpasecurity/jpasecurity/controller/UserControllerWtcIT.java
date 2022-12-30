@@ -124,7 +124,7 @@ class UserControllerWtcIT {
     @WithMockUser(roles = "ADMIN")
     void updateUserPasswordTest() throws Exception {
         webTestClient
-                .put()
+                .patch()
                 .uri("/api/user/{id}/password", user.getId())
                 .bodyValue(new UpdateUserPasswordDto("password"))
                 .exchange()
@@ -136,7 +136,7 @@ class UserControllerWtcIT {
     @WithMockUser(roles = "USER")
     void updateUserPasswordForbiddenTest() throws Exception {
         webTestClient
-                .put()
+                .patch()
                 .uri("/api/user/{id}/password", user.getId())
                 .bodyValue(new UpdateUserPasswordDto("password"))
                 .exchange()
@@ -149,7 +149,7 @@ class UserControllerWtcIT {
     @Disabled
     void updateUserPasswordIsUnauthorizedTest() throws Exception {
         webTestClient
-                .put()
+                .patch()
                 .uri("/api/user/{id}/password", user.getId())
                 .bodyValue(new UpdateUserPasswordDto("password"))
                 .exchange()
@@ -160,7 +160,7 @@ class UserControllerWtcIT {
     @WithMockUser(roles = "ADMIN")
     void updateUserPasswordBadRequestTest() throws Exception {
         webTestClient
-                .put()
+                .patch()
                 .uri("/api/user/{id}/password", user.getId())
                 .bodyValue(new UpdateUserPasswordDto(""))
                 .exchange()
@@ -172,7 +172,7 @@ class UserControllerWtcIT {
     @WithMockUser(roles = "ADMIN")
     void updateUsernameTest() throws Exception {
         webTestClient
-                .put()
+                .patch()
                 .uri("/api/user/{id}/username", user.getId())
                 .bodyValue(new UpdateUsernameDto("newusername"))
                 .exchange()
@@ -183,7 +183,7 @@ class UserControllerWtcIT {
     @WithMockUser(roles = "ADMIN")
     void updateUsernameBadRquestTest() throws Exception {
         webTestClient
-                .put()
+                .patch()
                 .uri("/api/user/{id}/username", user.getId())
                 .bodyValue(new UpdateUsernameDto(""))
                 .exchange()
@@ -195,7 +195,7 @@ class UserControllerWtcIT {
     @WithMockUser(roles = "USER")
     void updateUsernameForbiddenTest() throws Exception {
         webTestClient
-                .put()
+                .patch()
                 .uri("/api/user/{id}/username", user.getId())
                 .bodyValue(new UpdateUsernameDto("newusername"))
                 .exchange()
@@ -206,7 +206,7 @@ class UserControllerWtcIT {
     @Disabled
     void updateUsernameUnauthorizedTest() throws Exception {
         webTestClient
-                .put()
+                .patch()
                 .uri("/api/user/{id}/username", user.getId())
                 .bodyValue(new UpdateUsernameDto("newusername"))
                 .exchange()
@@ -220,7 +220,7 @@ class UserControllerWtcIT {
                 .delete()
                 .uri("/api/user/{id}", user.getId())
                 .exchange()
-                .expectStatus().isOk();
+                .expectStatus().isNoContent();
     }
 
     @Test
