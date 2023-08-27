@@ -1,10 +1,10 @@
 package jpasecurity.jpasecurity.controller;
 
 import jpasecurity.jpasecurity.model.ModelMapper;
-import jpasecurity.jpasecurity.model.dto.CreateUserDto;
-import jpasecurity.jpasecurity.model.dto.UpdateUserPasswordDto;
-import jpasecurity.jpasecurity.model.dto.UpdateUsernameDto;
-import jpasecurity.jpasecurity.model.dto.UserDto;
+import jpasecurity.jpasecurity.model.dto.user.CreateUserDto;
+import jpasecurity.jpasecurity.model.dto.user.update.UpdateUserPasswordDto;
+import jpasecurity.jpasecurity.model.dto.user.update.UpdateUsernameDto;
+import jpasecurity.jpasecurity.model.dto.user.UserDto;
 import jpasecurity.jpasecurity.model.entity.User;
 import jpasecurity.jpasecurity.repository.UserRepository;
 import jpasecurity.jpasecurity.service.UserService;

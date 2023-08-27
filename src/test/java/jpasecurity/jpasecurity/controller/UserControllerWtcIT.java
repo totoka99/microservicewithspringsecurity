@@ -1,8 +1,8 @@
 package jpasecurity.jpasecurity.controller;
 
-import jpasecurity.jpasecurity.model.dto.CreateUserDto;
-import jpasecurity.jpasecurity.model.dto.UpdateUserPasswordDto;
-import jpasecurity.jpasecurity.model.dto.UpdateUsernameDto;
+import jpasecurity.jpasecurity.model.dto.user.CreateUserDto;
+import jpasecurity.jpasecurity.model.dto.user.update.UpdateUserPasswordDto;
+import jpasecurity.jpasecurity.model.dto.user.update.UpdateUsernameDto;
 import jpasecurity.jpasecurity.model.entity.User;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;

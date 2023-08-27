@@ -1,4 +1,4 @@
-package jpasecurity.jpasecurity.model.dto;
+package jpasecurity.jpasecurity.model.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegistrationDto {
+public class UserDto {
     private String username;
-    private String password;
+    private String email = "jack";
 }

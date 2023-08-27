@@ -4,7 +4,11 @@ import jakarta.annotation.PostConstruct;
 import jpasecurity.jpasecurity.expcetion.UserNotFoundException;
 import jpasecurity.jpasecurity.expcetion.UsernameIsTakenException;
 import jpasecurity.jpasecurity.model.ModelMapper;
-import jpasecurity.jpasecurity.model.dto.*;
+import jpasecurity.jpasecurity.model.dto.user.CreateUserDto;
+import jpasecurity.jpasecurity.model.dto.user.update.UpdateUserPasswordDto;
+import jpasecurity.jpasecurity.model.dto.user.update.UpdateUsernameDto;
+import jpasecurity.jpasecurity.model.dto.user.UserDto;
+import jpasecurity.jpasecurity.model.dto.user.UserRegistrationDto;
 import jpasecurity.jpasecurity.model.entity.User;
 import jpasecurity.jpasecurity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,6 +34,14 @@ public class UserService {
         saveNewUser(new CreateUserDto("admin","admin","ROLE_ADMIN"));
     }
 
+    public List<UserDto> findAllUsers() {
+        return mapper.toUserDto(userRepository.findAll());
+//        return userRepository.findAll().stream().map(mapper::toUserDto).collect(Collectors.toList());
+    }
+    public UserDto getUserByUniqueName(String name){
+        return mapper.toUserDto(userRepository.findByUsernameIgnoreCase(name)
+                .orElseThrow(()-> new UserNotFoundException(name)));
+    }
     public UserDto saveNewUser(CreateUserDto createUserDto) throws UsernameIsTakenException {
         isUsernameAvailable(createUserDto.getUsername());
         User user = new User();
@@ -76,4 +89,5 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
+
 }

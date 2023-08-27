@@ -1,6 +1,6 @@
 package jpasecurity.jpasecurity.handler;
 
-import jpasecurity.jpasecurity.expcetion.ExampleNotFoundException;
+import jpasecurity.jpasecurity.expcetion.NoteNotFoundException;
 import jpasecurity.jpasecurity.expcetion.UserNotFoundException;
 import jpasecurity.jpasecurity.expcetion.UsernameIsTakenException;
 import org.springframework.http.HttpStatus;
@@ -33,8 +33,8 @@ public class ExceptionHandlerAdvice {
         return problemDetail;
     }
 
-    @ExceptionHandler(ExampleNotFoundException.class)
-    public ProblemDetail handleExampleNotFoundException(ExampleNotFoundException e) {
+    @ExceptionHandler(NoteNotFoundException.class)
+    public ProblemDetail handleExampleNotFoundException(NoteNotFoundException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.NOT_FOUND,
                 String.format("Example not found with id: %d", e.getId())

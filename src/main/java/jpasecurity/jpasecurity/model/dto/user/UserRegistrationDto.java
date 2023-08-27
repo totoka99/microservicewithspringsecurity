@@ -1,6 +1,5 @@
-package jpasecurity.jpasecurity.model.dto;
+package jpasecurity.jpasecurity.model.dto.user;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUsernameDto {
-    @NotBlank
+public class UserRegistrationDto {
     private String username;
+    private String password;
 }

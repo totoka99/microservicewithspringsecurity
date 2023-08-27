@@ -4,15 +4,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jpasecurity.jpasecurity.expcetion.UsernameIsTakenException;
-import jpasecurity.jpasecurity.model.dto.CreateUserDto;
-import jpasecurity.jpasecurity.model.dto.UpdateUserPasswordDto;
-import jpasecurity.jpasecurity.model.dto.UpdateUsernameDto;
-import jpasecurity.jpasecurity.model.dto.UserDto;
-import jpasecurity.jpasecurity.model.entity.User;
+import jpasecurity.jpasecurity.model.dto.user.CreateUserDto;
+import jpasecurity.jpasecurity.model.dto.user.update.UpdateUserPasswordDto;
+import jpasecurity.jpasecurity.model.dto.user.update.UpdateUsernameDto;
+import jpasecurity.jpasecurity.model.dto.user.UserDto;
 import jpasecurity.jpasecurity.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/user")
@@ -20,14 +23,24 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('USER')")
+    public List<UserDto> getAllUsers(){
+        return userService.findAllUsers();
+    }
+
     @GetMapping("/{userId}")
     @Operation(summary = "Return user's data")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponse(responseCode = "200")
-    public UserDto findUsersAllData(@PathVariable Long userId) {
+    public UserDto getUserById(@PathVariable Long userId) {
         return userService.findUserById(userId);
     }
 
+    @GetMapping("/name")
+    public UserDto getUserByUniqueName(@Param("username") String username){
+        return userService.getUserByUniqueName(username);
+    }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create new user")

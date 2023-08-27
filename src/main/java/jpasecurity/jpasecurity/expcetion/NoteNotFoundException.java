@@ -5,6 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class ExampleNotFoundException extends RuntimeException {
+public class NoteNotFoundException extends RuntimeException {
     private final Long id;
 }

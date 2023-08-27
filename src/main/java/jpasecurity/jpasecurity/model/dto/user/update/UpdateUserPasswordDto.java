@@ -1,4 +1,4 @@
-package jpasecurity.jpasecurity.model.dto;
+package jpasecurity.jpasecurity.model.dto.user.update;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
