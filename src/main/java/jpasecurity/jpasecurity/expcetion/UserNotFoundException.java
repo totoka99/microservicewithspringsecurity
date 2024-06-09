@@ -1,7 +1,6 @@
 package jpasecurity.jpasecurity.expcetion;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 public class UserNotFoundException extends RuntimeException {
