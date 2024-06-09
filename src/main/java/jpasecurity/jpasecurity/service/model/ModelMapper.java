@@ -1,9 +1,9 @@
-package jpasecurity.jpasecurity.model;
+package jpasecurity.jpasecurity.service.model;
 
-import jpasecurity.jpasecurity.model.dto.note.NoteDto;
-import jpasecurity.jpasecurity.model.dto.user.UserDto;
-import jpasecurity.jpasecurity.model.entity.Note;
-import jpasecurity.jpasecurity.model.entity.User;
+import jpasecurity.jpasecurity.controller.note.NoteDto;
+import jpasecurity.jpasecurity.controller.user.UserDto;
+import jpasecurity.jpasecurity.service.model.entity.Note;
+import jpasecurity.jpasecurity.service.model.entity.User;
 import org.mapstruct.Mapper;
 
 import java.util.List;
