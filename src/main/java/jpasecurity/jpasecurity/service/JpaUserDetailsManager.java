@@ -1,6 +1,6 @@
 package jpasecurity.jpasecurity.service;
 
-import jpasecurity.jpasecurity.config.SecurityUser;
+import jpasecurity.jpasecurity.config.model.SecurityUser;
 import jpasecurity.jpasecurity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +15,8 @@ public class JpaUserDetailsManager implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsernameIgnoreCase(username).map(SecurityUser::new)
+        return userRepository.findByEmailIgnoreCase(username).map(SecurityUser::new)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
+
     }
 }
