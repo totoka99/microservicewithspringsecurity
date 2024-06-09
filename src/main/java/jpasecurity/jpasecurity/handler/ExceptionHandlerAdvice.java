@@ -1,8 +1,8 @@
 package jpasecurity.jpasecurity.handler;
 
+import jpasecurity.jpasecurity.expcetion.EmailAddressIsTakenException;
 import jpasecurity.jpasecurity.expcetion.NoteNotFoundException;
 import jpasecurity.jpasecurity.expcetion.UserNotFoundException;
-import jpasecurity.jpasecurity.expcetion.UsernameIsTakenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,13 +13,13 @@ import java.net.URI;
 @RestControllerAdvice
 public class ExceptionHandlerAdvice {
 
-    @ExceptionHandler(UsernameIsTakenException.class)
-    public ProblemDetail handleUsernameIsTakenException(UsernameIsTakenException e) {
+    @ExceptionHandler(EmailAddressIsTakenException.class)
+    public ProblemDetail handleEmailAddressIsTakenException(EmailAddressIsTakenException e) {
         ProblemDetail problemDetail = ProblemDetail
                 .forStatusAndDetail(HttpStatus.CONFLICT,
-                        String.format("This username is already in use: %s", e.getUsername()));
-        problemDetail.setTitle("Username is already taken");
-        problemDetail.setType(URI.create("username-is-taken"));
+                        String.format("This Email address is already in use: %s", e.getUsername()));
+        problemDetail.setTitle("Email address is already taken");
+        problemDetail.setType(URI.create("email-address-is-taken"));
         return problemDetail;
     }
 
