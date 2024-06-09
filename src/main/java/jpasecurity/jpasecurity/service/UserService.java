@@ -1,21 +1,22 @@
 package jpasecurity.jpasecurity.service;
 
 import jakarta.annotation.PostConstruct;
+import jpasecurity.jpasecurity.config.jwt.JwtTokenDetailsService;
+import jpasecurity.jpasecurity.controller.user.CreateUserDto;
+import jpasecurity.jpasecurity.controller.user.UpdateUserPasswordDto;
+import jpasecurity.jpasecurity.controller.user.UserDto;
+import jpasecurity.jpasecurity.controller.user.UserRegistrationDto;
+import jpasecurity.jpasecurity.expcetion.EmailAddressIsTakenException;
 import jpasecurity.jpasecurity.expcetion.UserNotFoundException;
-import jpasecurity.jpasecurity.expcetion.UsernameIsTakenException;
-import jpasecurity.jpasecurity.model.ModelMapper;
-import jpasecurity.jpasecurity.model.dto.user.CreateUserDto;
-import jpasecurity.jpasecurity.model.dto.user.update.UpdateUserPasswordDto;
-import jpasecurity.jpasecurity.model.dto.user.update.UpdateUsernameDto;
-import jpasecurity.jpasecurity.model.dto.user.UserDto;
-import jpasecurity.jpasecurity.model.dto.user.UserRegistrationDto;
-import jpasecurity.jpasecurity.model.entity.User;
 import jpasecurity.jpasecurity.repository.UserRepository;
+import jpasecurity.jpasecurity.service.model.ModelMapper;
+import jpasecurity.jpasecurity.service.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,28 +24,38 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenDetailsService jwtTokenDetailsService;
     private final ModelMapper mapper;
 
     public UserDto findUserById(Long id) {
         return mapper.toUserDto(findUserIfPresent(id));
     }
+
     @PostConstruct
-    void init(){
-        saveNewUser(new CreateUserDto("admin","admin","ROLE_ADMIN"));
+    void init() {
+        CreateUserDto createUserDto = new CreateUserDto();
+        createUserDto.setUsername("admin");
+        createUserDto.setPassword("admin");
+        createUserDto.setEmail("smithy@admin.com");
+        createUserDto.setRoles("ROLE_ADMIN,ROLE_USER");
+        saveNewUser(createUserDto);
     }
 
     public List<UserDto> findAllUsers() {
         return mapper.toUserDto(userRepository.findAll());
-//        return userRepository.findAll().stream().map(mapper::toUserDto).collect(Collectors.toList());
     }
-    public UserDto getUserByUniqueName(String name){
+
+    public UserDto getUserByUniqueName(String name) {
         return mapper.toUserDto(userRepository.findByUsernameIgnoreCase(name)
-                .orElseThrow(()-> new UserNotFoundException(name)));
+                .orElseThrow(() -> new UserNotFoundException(name)));
     }
-    public UserDto saveNewUser(CreateUserDto createUserDto) throws UsernameIsTakenException {
-        isUsernameAvailable(createUserDto.getUsername());
+
+    public UserDto saveNewUser(CreateUserDto createUserDto) throws EmailAddressIsTakenException {
+        checkEmailAddressAvailable(createUserDto.getEmail());
         User user = new User();
+        user.setEmail(createUserDto.getEmail());
         user.setUsername(createUserDto.getUsername());
         user.setRoles(createUserDto.getRoles());
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
@@ -53,41 +64,62 @@ public class UserService {
     }
 
     public UserDto registering(UserRegistrationDto userRegistrationDto) {
-        isUsernameAvailable(userRegistrationDto.getUsername());
+        checkEmailAddressAvailable(userRegistrationDto.getEmail());
         User userToRegistering = new User();
         userToRegistering.setUsername(userRegistrationDto.getUsername());
-        userToRegistering.setPassword(userRegistrationDto.getPassword());
+        userToRegistering.setPassword(passwordEncoder.encode(userRegistrationDto.getPassword()));
+        userToRegistering.setEmail(userRegistrationDto.getEmail());
         userToRegistering.setRoles("ROLE_USER");
         return mapper.toUserDto(userRepository.save(userToRegistering));
     }
 
     @Transactional
-    public void updateUserPassword(Long id, UpdateUserPasswordDto updateUserPasswordDto) {
-        User user = findUserIfPresent(id);
+    public void updateUserPassword(UpdateUserPasswordDto updateUserPasswordDto) {
+        User user = findUserIfPresent(getUserId());
         user.setPassword(passwordEncoder.encode(updateUserPasswordDto.getPassword()));
-    }
-
-    @Transactional
-    public void updateUsername(Long id, UpdateUsernameDto updateUsernameDto) {
-        User user = findUserIfPresent(id);
-        isUsernameAvailable(updateUsernameDto.getUsername());
-        user.setUsername(updateUsernameDto.getUsername());
     }
 
     public void deleteUserById(Long id) {
         userRepository.delete(findUserIfPresent(id));
     }
 
-    private void isUsernameAvailable(String username) throws UsernameIsTakenException {
+    private void isUsernameAvailable(String username) throws EmailAddressIsTakenException {
         Optional<User> user = userRepository.findByUsernameIgnoreCase(username);
         if (user.isPresent()) {
-            throw new UsernameIsTakenException(username);
+            throw new EmailAddressIsTakenException(username);
         }
     }
 
-    private User findUserIfPresent(Long id) {
+    private void checkEmailAddressAvailable(String email) {
+        Optional<User> user = userRepository.findByEmailIgnoreCase(email);
+        if (user.isPresent()) {
+            throw new EmailAddressIsTakenException(email);
+        }
+    }
+
+    public UserDto getUserDetails() {
+        Long userId = jwtTokenDetailsService.getUserIdFromJWTToken();
+        return mapper.toUserDto(userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId)));
+    }
+
+    public long getUserId() {
+        return jwtTokenDetailsService.getUserIdFromJWTToken();
+
+    }
+
+    public User findUserIfPresent(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
+    @Transactional
+    public void requestNewPassword(String emailAddress) {
+        User user = userRepository.findByEmailIgnoreCase(emailAddress).orElseThrow(() -> new UserNotFoundException(emailAddress));
+        user.setPwResetCode(passwordEncoder.encode("newPassword"));
+        LocalDateTime theTimeNow = LocalDateTime.now();
+        user.setPwResetCodeValidUntil(theTimeNow.plusMinutes(15));
+        emailService.sendMailTo(user.getEmail(),
+                "click on the link to reset your password its going to be valid for 15 minutes"
+                , "password reset request");
+    }
 }
